@@ -1,21 +1,26 @@
 "use client";
 import { useReducer, useEffect } from "react";
 import Card from "@/components/UI/card";
-import { ObjectId } from "mongodb";
+import Votes from "@/components/comments/votes";
+import ComNum from "@/components/comments/coomentsNun";
 
-export type Comment = {
-  _id?: ObjectId;
-  productRequests_id: number;
-  username: string;
+export type Request = {
+  _id?: string;
   id: number;
-  content: string;
+  title: string;
+  category: string;
+  upvotes: number;
+  status: string;
+  description: string;
+  numCom: number;
 };
 
 type State = {
   isFetching: boolean;
   error: unknown;
-  comment: Comment[];
+  request: Request[];
 };
+
 type Fetch = {
   type: "FETCHING";
 };
@@ -25,17 +30,17 @@ type Error = {
   error: unknown;
 };
 
-type Comments = {
+type RequestState = {
   type: "COMMENTS";
-  comment: Comment[];
+  request: Request[];
 };
 
-type Action = Fetch | Error | Comments;
+type Action = Fetch | Error | RequestState;
 
 const initialState: State = {
   isFetching: false,
   error: null,
-  comment: [],
+  request: [],
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -48,7 +53,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         isFetching: false,
-        comment: action.comment,
+        request: action.request,
       };
     default:
       return state;
@@ -62,15 +67,15 @@ export default function Home() {
     const fetchComments = async () => {
       dispatch({ type: "FETCHING" });
       try {
-        const response = await fetch("http://localhost:8080/comment");
+        const response = await fetch("http://localhost:8080/request");
         if (!response.ok) {
           throw new Error(
             `Error ${response.status}: Unable to fetch comments.`
           );
         }
         const data = await response.json();
-        console.log(data);
-        dispatch({ type: "COMMENTS", comment: data });
+        console.log(data[0]);
+        dispatch({ type: "COMMENTS", request: data });
       } catch (error) {
         dispatch({ type: "ERROR", error: error });
         console.log(error);
@@ -81,12 +86,23 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-color6 p-5 flex flex-col gap-7">
-      {state.comment.map((comment) => (
-        <Card key={comment.id}>
-          <div className="bg-white p-6 ">
-            <h1>{comment.username}</h1>
-            <h2>{comment.content}</h2>
+    <div className="bg-F7F8FD flex flex-col gap-7">
+      {state.request.map((request) => (
+        <Card key={request._id}>
+          <div className="flex gap-1 flex-row">
+            <Card
+              key={request.id}
+              tailwind={
+                "bg-red-600 w-[60px] h-[50px] flex flex-row  gap-2 items-center p-5 justify-center md:flex-col"
+              }
+            >
+              <Votes votes={request.upvotes} />
+            </Card>
+            <div>
+              <h1>{request.title}</h1>
+              <h2>{request.description}</h2>
+            </div>
+            <ComNum num={request.numCom} />
           </div>
         </Card>
       ))}

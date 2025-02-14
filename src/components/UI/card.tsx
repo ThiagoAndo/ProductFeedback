@@ -2,12 +2,12 @@ import { type ReactNode } from "react";
 
 interface CardProps {
   children: ReactNode;
+  tailwind?: string;
 }
 
-const Card = ({ children }: CardProps) => {
-  //   return <div className="rounded-md ml-[5%] mr-[5%] overflow-hidden">{children}</div>;
+const Card = ({ children, tailwind }: CardProps) => {
   return (
-    <div className="rounded-md overflow-hidden">{children}</div>
+    <div className={`rounded-md ${tailwind} overflow-hidden`}>{children}</div>
   );
 };
 
