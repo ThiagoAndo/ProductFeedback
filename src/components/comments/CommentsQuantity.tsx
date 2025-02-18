@@ -5,7 +5,7 @@ interface VotesProps {
   num: number;
 }
 
-const ComNum = ({ num }: VotesProps) => {
+const CommentsQuantity = ({ num }: VotesProps) => {
   return (
     <Card tailwind="flex flex-row gap-2 justify-self-end h-fit md:mt-6">
       <Image src={comments} alt="upvote" className="w-[25px]"  />
@@ -14,4 +14,4 @@ const ComNum = ({ num }: VotesProps) => {
   );
 };
 
-export default ComNum;
+export default CommentsQuantity;
